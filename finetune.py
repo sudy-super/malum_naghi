@@ -16,7 +16,7 @@ wandb.init(project="naghi_sft", name="2e-5_qwen2.5-7b_eps-1e-15", entity="sudy_s
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 
-
+"""
 device_map = {
     'model.embed_tokens': 0,
     'model.rotary_emb': 0,
@@ -54,13 +54,14 @@ device_map = {
     'model.norm': 3,
     'lm_head': 3
 }
+"""
 
 model_name = "Qwen/Qwen2.5-7B"
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    device_map=device_map,
+    #device_map=device_map,
     torch_dtype=torch.bfloat16,
     attn_implementation="flash_attention_2"
 )
