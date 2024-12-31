@@ -14,6 +14,7 @@ import torch.distributed as dist
 wandb.init(project="naghi_sft", name="2e-5_qwen2.5-7b_eps-1e-15", entity="sudy_super")
 
 torch.manual_seed(42)
+torch.cuda.manual_seed(42)
 
 
 device_map = {
