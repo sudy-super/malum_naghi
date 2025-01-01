@@ -15,4 +15,4 @@ class PatchOptions:
     gradient_accumulation_steps: int = 1
 
     def to_kwargs(self) -> dict[str, Any]:
-        return dict(impl=self.impl, reduction=self.reduction, use_kahan=self.use_kahan)
+        return dict(impl=self.impl, reduction=self.reduction, use_kahan=self.use_kahan, gradient_accumulation_steps=self.gradient_accumulation_steps)
