@@ -67,8 +67,11 @@ class LinearCrossEntropyFunction(torch.autograd.Function):
 
         reduction = params.reduction
         if reduction == "mean":
-            # Adjust for gradient accumulation
-            loss = nll.mean() / params.gradient_accumulation_steps
+            if e.requires_grad or c.requires_grad:
+                # Adjust for gradient accumulation
+                loss = nll.mean() / params.gradient_accumulation_steps
+            else:
+                loss = nll.mean()
         elif reduction == "sum":
             loss = nll.sum()
         elif reduction == "none":
