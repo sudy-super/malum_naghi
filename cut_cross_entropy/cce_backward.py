@@ -161,7 +161,7 @@ def _cce_backward_kernel(
 
         e_ptrs += BLOCK_D * stride_ed
         c_ptrs += BLOCK_D * stride_cd
-    
+
     tl.debug_barrier()
 
     if HAS_SOFTCAP:

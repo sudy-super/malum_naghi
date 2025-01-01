@@ -25,8 +25,8 @@ class CCEParams:
     filter_eps: float | None
     shift: bool
     batch_shape: torch.Size
-    gradient_accumulation_steps: int = 1
     use_kahan: bool
+    gradient_accumulation_steps: int = 1
 
 
 @torch.compile(fullgraph=True, dynamic=True)
@@ -152,8 +152,8 @@ def cce_linear_cross_entropy(
     reduction: str = "mean",
     shift: bool = False,
     filter_eps: float | str | None = "auto",
-    gradient_accumulation_steps: int = 1,
     use_kahan: bool = False,
+    gradient_accumulation_steps: int = 1,
 ) -> torch.Tensor:
     assert e.size()[0:-1] == targets.size()
     assert e.size(-1) == c.size(1)
@@ -189,6 +189,7 @@ def cce_linear_cross_entropy(
             _handle_eps(filter_eps, e.dtype),
             shift,
             batch_shape,
-            gradient_accumulation_steps,  # パラメータを渡す
+            use_kahan,
+            gradient_accumulation_steps,
         ),
     )

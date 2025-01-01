@@ -72,6 +72,7 @@ def _cce_lse_forward_kernel(
             c_mask = c_mask & (offs_d[:, None] < (D - d * BLOCK_D))
 
         c = tl.load(c_ptrs, mask=c_mask, other=0.0)
+
         accum = tl.dot(e, c, accum, input_precision=DOT_PRECISION)
 
         e_ptrs += BLOCK_D * stride_ed

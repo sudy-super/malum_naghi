@@ -259,7 +259,7 @@ model.requires_grad_(True)
 
 # model = cast(transformers.PreTrainedModel, model)
 from cut_cross_entropy.transformers import cce_patch
-model = cce_patch(model, impl="cce", reduction="mean", gradient_accumulation_steps=32)
+model = cce_patch(model, impl="cce", reduction="mean", use_kahan=True, gradient_accumulation_steps=32)
 
 args = TrainingArguments(
     num_train_epochs=2,

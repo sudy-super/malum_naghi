@@ -40,9 +40,9 @@ def linear_cross_entropy(
     reduction: str = "mean",
     shift: bool = False,
     filter_eps: float | str | None = "auto",
+    use_kahan: bool = False,
     impl: str | LinearCrossEntropyImpl = LCE_IMPL_DEFAULT,
     gradient_accumulation_steps: int = 1,
-    use_kahan: bool = False,
 ) -> torch.Tensor:
     """
     :param impl: The linear cross entropy implementation to use. Currently supports cce, torch_compile, and cce_exact.
@@ -57,14 +57,14 @@ def linear_cross_entropy(
                 raise RuntimeError(
                     "CCE does not support MacOS. Please use torch_compile when running on MacOS instead."
                 )
-            
+
             if impl == "cce_exact":
                 filter_eps = None
                 use_kahan = True
 
             assert cce_linear_cross_entropy is not None
             return cce_linear_cross_entropy(
-                e, c, targets, ignore_index, softcap, reduction, shift, filter_eps, gradient_accumulation_steps, use_kahan
+                e, c, targets, ignore_index, softcap, reduction, shift, filter_eps, use_kahan, gradient_accumulation_steps
             )
         case "torch_compile":
             return torch_compile_linear_cross_entropy(

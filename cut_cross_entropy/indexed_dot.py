@@ -59,7 +59,7 @@ def _indexed_neg_dot_forward_kernel(
     inds = tl.load(Inds + stride_ib * offs_b, mask=offs_b < BMax, other=V)
 
     c_ptrs = C + (inds[:, None] * stride_cv + offs_d[None, :] * stride_cd)
-    
+
     c_mask = inds[:, None] < V
     if not EVEN_D:
         c_mask = c_mask & (offs_d[None, :] < D)

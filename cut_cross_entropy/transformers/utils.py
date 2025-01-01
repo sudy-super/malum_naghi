@@ -11,8 +11,8 @@ TransformersModelT = TypeVar("TransformersModelT", bound=transformers.PreTrained
 class PatchOptions:
     impl: str
     reduction: str
-    gradient_accumulation_steps: int
     use_kahan: bool
+    gradient_accumulation_steps: int = 1
 
     def to_kwargs(self) -> dict[str, Any]:
         return dict(impl=self.impl, reduction=self.reduction, use_kahan=self.use_kahan)
