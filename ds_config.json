@@ -29,6 +29,15 @@
         "allgather_bucket_size": 2e8,
         "reduce_scatter": true
     },
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": 7e-6,
+            "betas": [0.9, 0.95],
+            "eps": 1e-15,
+            "weight_decay": 0.1
+        }
+    },
     "scheduler": {
         "type": "WarmupCosineLR",
         "params": {

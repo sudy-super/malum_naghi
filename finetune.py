@@ -262,21 +262,22 @@ from cut_cross_entropy.transformers import cce_patch
 model = cce_patch(model, impl="cce", reduction="mean", gradient_accumulation_steps=32)
 
 args = TrainingArguments(
-    num_train_epochs=1,
+    num_train_epochs=2,
     per_device_train_batch_size=4,
     per_device_eval_batch_size=4,
     gradient_accumulation_steps=32,
-    learning_rate=2e-5,
+    learning_rate=7e-6,
     adam_epsilon=1e-15,
     lr_scheduler_type="cosine",
     warmup_ratio=0.03,
     adam_beta2=0.95,
-    weight_decay=0.0,
+    weight_decay=0.1,
+    max_grad_norm=1.0,
     logging_steps=1,
     eval_strategy="steps",
     save_strategy="steps",
-    eval_steps=199,
-    save_steps=597,
+    eval_steps=268,
+    save_steps=1876,
     output_dir="output",
     report_to="wandb",
     save_total_limit=3,
@@ -284,13 +285,13 @@ args = TrainingArguments(
     seed=42,
     bf16=True,  # bf16を有効化
     bf16_full_eval=True,
-    #deepspeed="ds_config.json",  # DeepSpeed設定ファイルの指定
+    deepspeed="ds_config.json",  # DeepSpeed設定ファイルの指定
     gradient_checkpointing=True,
-    optim="adafactor",
+    optim="adamw_torch_fused",
     dataloader_pin_memory=True,
     dataloader_num_workers=8,
     local_rank=int(os.environ.get("LOCAL_RANK", -1)),
-    torch_compile=True,
+    #torch_compile=True,
 )
 
 trainer = Trainer(
