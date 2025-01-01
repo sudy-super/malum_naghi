@@ -157,8 +157,7 @@ def cce_forward(
                 self.lm_head.weight,  # Already on lm_head_device
                 labels.to(lm_head_device),
                 shift=True,  # シフト処理はlinear_cross_entropyに任せる
-                impl=_PATCH_OPTS.impl,
-                reduction=_PATCH_OPTS.reduction,
+                **_PATCH_OPTS.to_kwargs(),
                 gradient_accumulation_steps=_PATCH_OPTS.gradient_accumulation_steps,
             )
             """ 

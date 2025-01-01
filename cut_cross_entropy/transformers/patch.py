@@ -18,6 +18,8 @@ def cce_patch(
     model_type_or_model: str | transformers.PretrainedConfig,
     impl: str | LinearCrossEntropyImpl = LCE_IMPL_DEFAULT,
     reduction: str = "mean",
+    gradient_accumulation_steps: int = 1,
+    use_kahan: bool = False,
 ) -> None: ...
 
 
@@ -26,6 +28,8 @@ def cce_patch(
     model_type_or_model: TransformersModelT,
     impl: str | LinearCrossEntropyImpl = LCE_IMPL_DEFAULT,
     reduction: str = "mean",
+    gradient_accumulation_steps: int = 1,
+    use_kahan: bool = False,
 ) -> TransformersModelT: ...
 
 
@@ -34,6 +38,7 @@ def cce_patch(
     impl: str | LinearCrossEntropyImpl = LCE_IMPL_DEFAULT,
     reduction: str = "mean",
     gradient_accumulation_steps: int = 1,
+    use_kahan: bool = False,
 ) -> TransformersModelT | None:
     if isinstance(impl, LinearCrossEntropyImpl):
         impl = impl.name.lower()
@@ -48,7 +53,7 @@ def cce_patch(
     else:
         model_type = model_type_or_model
 
-    patch_options = PatchOptions(impl, reduction, gradient_accumulation_steps)
+    patch_options = PatchOptions(impl, reduction, gradient_accumulation_steps, use_kahan)
     match model_type:
         case "llama":
             return patch_llama(model_type_or_model, patch_options)
