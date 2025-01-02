@@ -43,6 +43,7 @@ def linear_cross_entropy(
     use_kahan: bool = False,
     impl: str | LinearCrossEntropyImpl = LCE_IMPL_DEFAULT,
     gradient_accumulation_steps: int = 1,
+    training: bool = False,
 ) -> torch.Tensor:
     """
     :param impl: The linear cross entropy implementation to use. Currently supports cce, torch_compile, and cce_exact.
@@ -64,7 +65,7 @@ def linear_cross_entropy(
 
             assert cce_linear_cross_entropy is not None
             return cce_linear_cross_entropy(
-                e, c, targets, ignore_index, softcap, reduction, shift, filter_eps, use_kahan, gradient_accumulation_steps
+                e, c, targets, ignore_index, softcap, reduction, shift, filter_eps, use_kahan, gradient_accumulation_steps, training
             )
         case "torch_compile":
             return torch_compile_linear_cross_entropy(

@@ -41,6 +41,7 @@ class LinearCrossEntropyFunction(torch.autograd.Function):
         e: torch.Tensor,
         c: torch.Tensor,
         params: CCEParams,
+        training: bool,
     ) -> torch.Tensor:
         needs_grad = e.requires_grad or c.requires_grad
         return_logit_avg = needs_grad and params.filter_eps is not None
@@ -68,11 +69,10 @@ class LinearCrossEntropyFunction(torch.autograd.Function):
 
         reduction = params.reduction
         if reduction == "mean":
-            if e.requires_grad or c.requires_grad:
+            loss = nll.mean()
+            if training:
                 # Adjust for gradient accumulation
-                loss = nll.mean() / params.gradient_accumulation_steps
-            else:
-                loss = nll.mean()
+                loss = loss / params.gradient_accumulation_steps
         elif reduction == "sum":
             loss = nll.sum()
         elif reduction == "none":
@@ -88,7 +88,7 @@ class LinearCrossEntropyFunction(torch.autograd.Function):
     @staticmethod
     def backward(
         ctx, grad_out: torch.Tensor
-    ) -> tuple[torch.Tensor | None, torch.Tensor | None, None]:
+    ) -> tuple[torch.Tensor | None, torch.Tensor | None, None, None]:
         e, c, lse, targets, valids, logit_avg = ctx.saved_tensors
 
         if logit_avg is not None:
@@ -123,16 +123,16 @@ class LinearCrossEntropyFunction(torch.autograd.Function):
             grad_scale=grad_scale,
             use_kahan=params.use_kahan,
         )
-
-        return de, dc, None
+        return de, dc, None, None
 
 
 def linear_cross_entropy_apply(
     e: torch.Tensor,
     c: torch.Tensor,
     params: CCEParams,
+    training: bool = False,
 ) -> torch.Tensor:
-    loss = LinearCrossEntropyFunction.apply(e, c, params)
+    loss = LinearCrossEntropyFunction.apply(e, c, params, training)
     assert isinstance(loss, torch.Tensor)
 
     if params.shift and params.reduction == "none":
@@ -154,6 +154,7 @@ def cce_linear_cross_entropy(
     filter_eps: float | str | None = "auto",
     use_kahan: bool = False,
     gradient_accumulation_steps: int = 1,
+    training: bool = False,
 ) -> torch.Tensor:
     assert e.size()[0:-1] == targets.size()
     assert e.size(-1) == c.size(1)
@@ -192,4 +193,5 @@ def cce_linear_cross_entropy(
             use_kahan,
             gradient_accumulation_steps,
         ),
+        training=training,
     )

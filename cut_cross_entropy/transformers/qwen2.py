@@ -158,6 +158,7 @@ def cce_forward(
                 labels.to(lm_head_device),
                 shift=True,  # シフト処理はlinear_cross_entropyに任せる
                 **_PATCH_OPTS.to_kwargs(),
+                training=self.model.training,
             )
             """ 
             # Compare with standard cross entropy loss for debugging
